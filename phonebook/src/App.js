@@ -7,6 +7,11 @@ const App = (props) => {
 
   const addName = (event) => {
     event.preventDefault()
+    if (persons.some(function(person) {return person.name === newName})) {
+      window.alert(newName + ' already exist in phonebook')
+      return
+    }
+
     const newPerson = {
       id: persons.length + 1,
       name: newName
