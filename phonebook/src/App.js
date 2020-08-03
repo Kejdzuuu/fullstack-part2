@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import Person from './components/Person'
 
 const App = (props) => {
-  const [ persons, setPersons ] = useState(props.persons) 
+  const [ persons, setPersons ] = useState(props.persons)
   const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
 
   const addName = (event) => {
     event.preventDefault()
@@ -14,15 +15,21 @@ const App = (props) => {
 
     const newPerson = {
       id: persons.length + 1,
-      name: newName
+      name: newName,
+      number: newNumber
     }
 
     setPersons(persons.concat(newPerson))
     setNewName('')
+    setNewNumber('')
   }
 
   const handleNameInput = (event) => {
     setNewName(event.target.value)
+  }
+
+  const handleNumberInput = (event) => {
+    setNewNumber(event.target.value)
   }
 
   return (
@@ -31,6 +38,9 @@ const App = (props) => {
       <form onSubmit={addName}>
         <div>
           name: <input value={newName} onChange={handleNameInput} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={handleNumberInput} />
         </div>
         <div>
           <button type="submit">add</button>
