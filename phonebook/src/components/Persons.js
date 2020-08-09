@@ -1,7 +1,7 @@
 import React from 'react'
 import Person from './Person'
 
-const Filter = ({ persons }) => {
+const Persons = ({ persons }) => {
 
   return (
     <ul>
@@ -12,4 +12,4 @@ const Filter = ({ persons }) => {
   )
 }
 
-export default Filter
+export default Persons
