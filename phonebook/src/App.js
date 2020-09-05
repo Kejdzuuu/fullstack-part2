@@ -20,32 +20,47 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    if (persons.some(function(person) {return person.name === newName})) {
-      window.alert(`${newName} already exist in phonebook`)
-      return
-    }
 
     const newPerson = {
       name: newName,
       number: newNumber
     }
 
-    personService
-      .create(newPerson)
-      .then(createdPerson => {
-        setPersons(persons.concat(createdPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+    if (persons.some(function(person) {return person.name === newName})) {
+      const result = window.confirm('Replace phone number?')
+      
+      if(result){
+        const personToReplace = persons.find(n => n.name === newName)
+
+        personService
+          .update(personToReplace.id, newPerson)
+          .then(createdPerson => {
+            setPersons(persons.filter(n => n.name !== newName).concat(createdPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+    } else {
+      personService
+        .create(newPerson)
+        .then(createdPerson => {
+          setPersons(persons.concat(createdPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
   }
 
   const deleteName = (id) => {
+    const result = window.confirm('Delete contact?')
     
-    personService
-      .remove(id)
-      .then(() =>
-        setPersons(persons.filter(n => n.id !== id))
-      )
+    if(result){
+      personService
+        .remove(id)
+        .then(() =>
+          setPersons(persons.filter(n => n.id !== id))
+        )
+    }
   }
 
   const handleNameInput = (event) => {
