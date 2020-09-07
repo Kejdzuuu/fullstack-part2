@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
 
@@ -9,6 +10,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ notification, setNotification ] = useState(null)
 
   useEffect(() => {
     personService
@@ -28,8 +30,8 @@ const App = () => {
 
     if (persons.some(function(person) {return person.name === newName})) {
       const result = window.confirm('Replace phone number?')
-      
-      if(result){
+
+      if (result) {
         const personToReplace = persons.find(n => n.name === newName)
 
         personService
@@ -45,6 +47,10 @@ const App = () => {
         .create(newPerson)
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
+          setNotification(`Added ${newName}`)
+          setTimeout(() => {
+            setNotification(null)
+          }, 3000)
           setNewName('')
           setNewNumber('')
         })
@@ -54,7 +60,7 @@ const App = () => {
   const deleteName = (id) => {
     const result = window.confirm('Delete contact?')
     
-    if(result){
+    if (result) {
       personService
         .remove(id)
         .then(() =>
@@ -82,6 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Filter onChange={handleFilterInput} />
       <PersonForm addName={addName} newName={newName} newNumber={newNumber}
               nameInput={handleNameInput} numberInput={handleNumberInput} />
