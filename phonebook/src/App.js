@@ -10,7 +10,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
-  const [ notification, setNotification ] = useState(null)
+  const [ notificationMsg, setNotificationMsg ] = useState(null)
+  const [ notificationType, setNotificationType ] = useState('')
 
   useEffect(() => {
     personService
@@ -47,9 +48,10 @@ const App = () => {
         .create(newPerson)
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
-          setNotification(`Added ${newName}`)
+          setNotificationType('info')
+          setNotificationMsg(`Added ${newName}`)
           setTimeout(() => {
-            setNotification(null)
+            setNotificationMsg(null)
           }, 3000)
           setNewName('')
           setNewNumber('')
@@ -59,6 +61,7 @@ const App = () => {
 
   const deleteName = (id) => {
     const result = window.confirm('Delete contact?')
+    const person = persons.find(n => n.id === id)
     
     if (result) {
       personService
@@ -66,6 +69,14 @@ const App = () => {
         .then(() =>
           setPersons(persons.filter(n => n.id !== id))
         )
+        .catch(error => {
+          setNotificationType('error')
+          setNotificationMsg(`Information on ${person.name} was already deleted from server`)
+          setTimeout(() => {
+            setNotificationMsg(null)
+          }, 3000)
+          setPersons(persons.filter(n => n.id !== id))
+        })
     }
   }
 
@@ -88,7 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notificationMsg} type={notificationType} />
       <Filter onChange={handleFilterInput} />
       <PersonForm addName={addName} newName={newName} newNumber={newNumber}
               nameInput={handleNameInput} numberInput={handleNumberInput} />
