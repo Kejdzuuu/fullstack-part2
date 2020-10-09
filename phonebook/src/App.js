@@ -38,7 +38,9 @@ const App = () => {
         personService
           .update(personToReplace.id, newPerson)
           .then(createdPerson => {
-            setPersons(persons.filter(n => n.name !== newName).concat(createdPerson))
+            setPersons(persons.map(n =>
+              n.name === newName ? {...newPerson} : n)
+            )
             setNewName('')
             setNewNumber('')
           })
